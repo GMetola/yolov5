@@ -60,6 +60,7 @@ from utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_devic
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
 RANK = int(os.getenv('RANK', -1))
 WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"  # to avoid: Error #15: Initializing libiomp5md.dll, but found libiomp5md.dll already initialized.
 
 
 def train(hyp,  # path/to/hyp.yaml or hyp dictionary
@@ -641,5 +642,20 @@ def run(**kwargs):
 
 
 if __name__ == "__main__":
-    opt = parse_opt()
+    PARSING = False
+    
+    if PARSING:
+        opt = parse_opt()
+    else:
+        print("parsing is deactivated, check final rows of train.py")
+        from pathlib import WindowsPath
+        opt = argparse.Namespace(artifact_alias='latest', batch_size=32, bbox_interval=-1, bucket='',
+            cache=None, cfg='./models/yolov5s.yaml', cos_lr=False, data='C:/datasets/crack_detector/data.yaml',
+            device='0', entity=None, epochs=200, evolve=None, exist_ok=False, freeze=[0],
+            hyp=WindowsPath('data/hyps/hyp.scratch-low.yaml'), image_weights=False, imgsz=640,
+            label_smoothing=0.0, local_rank=-1, multi_scale=False, name='exp', noautoanchor=False,
+            nosave=False, noval=False, optimizer='SGD', patience=100, project=WindowsPath('runs/train'),
+            quad=False, rect=False, resume=False, save_period=-1, single_cls=False, sync_bn=False,
+            upload_dataset=False, weights='yolov5s.pt', workers=6)        
+        
     main(opt)
