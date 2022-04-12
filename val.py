@@ -377,5 +377,33 @@ def main(opt):
 
 
 if __name__ == "__main__":
-    opt = parse_opt()
+    PARSING = False
+    
+    if PARSING:
+        opt = parse_opt()
+    else:
+        print("parsing is deactivated, check final rows of val.py")
+        from pathlib import WindowsPath
+        # sobre los pesos: ¿los que salen en train/exp ya son completos o tengo que sumarles la base de yolo
+        opt = argparse.Namespace(
+                            data='C:/datasets/crack_detector/data_test.yaml',
+                            weights=['C:/git/yolov5/runs/train/exp2/weights/best.pt'],
+                            batch_size=16,
+                            imgsz=640,
+                            conf_thres=0.5,
+                            iou_thres=0.65,
+                            task='test',
+                            device=0,
+                            single_cls=False,
+                            augment=False,
+                            verbose=True,
+                            save_txt=True,
+                            save_hybrid=True,
+                            save_conf=True,
+                            save_json=False,
+                            project='runs/test',
+                            name='exp',
+                            exist_ok=False,
+                            half=True
+                        )
     main(opt)

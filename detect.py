@@ -247,5 +247,39 @@ def main(opt):
 
 
 if __name__ == "__main__":
-    opt = parse_opt()
+    PARSING = False
+    
+    if PARSING:
+        opt = parse_opt()
+    else:
+        print("parsing is deactivated, check final rows of train.py")
+        from pathlib import WindowsPath
+        opt = argparse.Namespace(
+                            weights=['C:/git/yolov5/runs/train/exp2/weights/best.pt'],
+                            source='C:/datasets/crack_detector/detect',
+                            data='C:\datasets\crack_detector\detect/data_detect.yaml',
+                            imgsz=[640,640],
+                            conf_thres=0.25,
+                            iou_thres=0.65,
+                            max_det=1000,
+                            device=0,
+                            view_img=False,
+                            save_txt=True,
+                            save_conf=True,
+                            save_crop=False,
+                            nosave=False,
+                            classes=None,
+                            agnostic_nms=False,
+                            augment=False,
+                            visualize=False,
+                            update=False,
+                            project='runs/detect',
+                            name='exp',
+                            exist_ok=False,
+                            line_thickness=3,
+                            hide_labels=False,
+                            hide_conf=False,
+                            half=True,
+                            dnn=False)
+        opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
     main(opt)
