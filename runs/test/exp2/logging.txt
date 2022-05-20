@@ -1,0 +1,21 @@
+(torch_yolov5) PS C:\git\yolov5>  & 'C:\Users\metol\.conda\envs\torch_yolov5\python.exe' 'c:\Users\metol\.vscode\extensions\ms-python.python-2022.4.1\pythonFiles\lib\python\debugpy\launcher' '50077' '--' 'c:\git\yolov5\val.py'
+parsing is deactivated, check final rows of val.py
+YOLOv5  v6.1-78-g263a4f5 torch 1.8.0.dev20210208+cu110 CUDA:0 (NVIDIA GeForce RTX 3060, 12288MiB)
+
+Fusing layers...
+YOLOv5s summary: 213 layers, 7045186 parameters, 0 gradients, 15.9 GFLOPs
+test: Scanning 'C:\datasets\crack_detector\test\labels.cache' images and labels... 709 found, 0 missing, 0 empty, 0 corrupt: 100%|██████████| 709/709 [00:00<?, ?it/s]
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100%|██████████| 45/45 [01:00<00:00,  1.34s/it]
+                 all        709       6557          1          1      0.995      0.995
+    Reflective Crack        709       1201          1          1      0.995      0.995
+     Transvers Crack        709        530          1          1      0.995      0.995
+         Block Crack        709        924          1          1      0.995      0.995
+  Longitudinal Crack        709        281          1          1      0.995      0.995
+      Aligator Crack        709        483          1          1      0.995      0.995
+Sealed Reflective Crack        709        572          1          1      0.995      0.995
+Lane Longitudinal Crack        709       1220          1          1      0.995      0.995
+Sealed Longitudinal Crack        709       1295          1          1      0.995      0.995
+             pothole        709         51          1          1      0.995      0.995
+Speed: 0.1ms pre-process, 5.5ms inference, 2.8ms NMS per image at shape (16, 3, 640, 640)
+Results saved to runs\test\exp2
+709 labels saved to runs\test\exp2\labels

@@ -1,0 +1,26 @@
+     Epoch   gpu_mem       box       obj       cls    labels  img_size
+     38/49     7.72G   0.04796   0.09153  0.006004        87       640: 100%|██████████| 179/179 [01:02<00:00,  2.87it/s]
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100%|██████████| 12/12 [00:06<00:00,  1.81it/s]
+                 all        713       6499      0.497       0.52      0.467      0.151
+Stopping training early as no improvement observed in last 10 epochs. Best results observed at epoch 28, best model saved as best.pt.
+To update EarlyStopping(patience=10) pass a new patience value, i.e. `python train.py --patience 300` or use `--patience 0` to disable EarlyStopping.
+
+39 epochs completed in 0.773 hours.
+Optimizer stripped from runs\train\exp_train\weights\last.pt, 14.5MB
+Optimizer stripped from runs\train\exp_train\weights\best.pt, 14.5MB
+
+Validating runs\train\exp_train\weights\best.pt...
+Fusing layers...
+YOLOv5s summary: 213 layers, 7034398 parameters, 0 gradients, 15.9 GFLOPs
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100%|██████████| 12/12 [00:11<00:00,  1.03it/s]
+                 all        713       6499       0.51      0.515      0.477      0.155
+    Reflective Crack        713       1258      0.583      0.688      0.606       0.23
+     Transvers Crack        713        518       0.63      0.552      0.556       0.16
+         Block Crack        713        994       0.51      0.411      0.413      0.123
+  Longitudinal Crack        713        233      0.302        0.3      0.243      0.068
+      Aligator Crack        713        419      0.376      0.435      0.322      0.083
+Sealed Reflective Crack        713        535       0.63      0.677      0.662      0.243
+Lane Longitudinal Crack        713       1266      0.568       0.44       0.46      0.145
+Sealed Longitudinal Crack        713       1236      0.567      0.508      0.504      0.175
+             pothole        713         40      0.428      0.625      0.525      0.172
+Results saved to runs\train\exp_train
