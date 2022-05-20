@@ -256,11 +256,11 @@ if __name__ == "__main__":
         from pathlib import WindowsPath
         opt = argparse.Namespace(
                             weights=['C:/git/yolov5/runs/train/exp2/weights/best.pt'],
-                            source='C:/datasets/crack_detector/detect',
-                            data='C:\datasets\crack_detector\detect/data_detect.yaml',
+                            source='C:/datasets/crack_detector_university/resized_640_460',
+                            data='C:\datasets\crack_detector_university/data_test.yaml',
                             imgsz=[640,640],
                             conf_thres=0.25,
-                            iou_thres=0.65,
+                            iou_thres=0.30,
                             max_det=1000,
                             device=0,
                             view_img=False,
@@ -274,7 +274,7 @@ if __name__ == "__main__":
                             visualize=False,
                             update=False,
                             project='runs/detect',
-                            name='exp',
+                            name='exp_uni',
                             exist_ok=False,
                             line_thickness=3,
                             hide_labels=False,

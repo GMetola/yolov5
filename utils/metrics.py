@@ -171,6 +171,19 @@ class ConfusionMatrix:
         # fn = self.matrix.sum(0) - tp  # false negatives (missed detections)
         return tp[:-1], fp[:-1]  # remove background class
 
+    def tp_fp_fn(self):
+        """
+        Calculates a global (all classes included) average of TP, FP and FN
+        """
+        try:
+            tp = np.mean(self.matrix.diagonal()) # true positive aver.
+            fp = np.mean(self.matrix[:,-1]) # false positive aver.
+            fn = np.mean(self.matrix[-1,:]) # false negative aver.
+            print(f"Global TP: {tp}, FP: {fp}, FN: {fn}")
+        except:
+            print("Something went wrong.")
+
+
     def plot(self, normalize=True, save_dir='', names=()):
         try:
             import seaborn as sn
@@ -191,6 +204,7 @@ class ConfusionMatrix:
             fig.axes[0].set_ylabel('Predicted')
             fig.savefig(Path(save_dir) / 'confusion_matrix.png', dpi=250)
             plt.close()
+            self.tp_fp_fn()
         except Exception as e:
             print(f'WARNING: ConfusionMatrix plot failure: {e}')
 
