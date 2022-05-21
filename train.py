@@ -16,6 +16,7 @@ import argparse
 import math
 import os
 import random
+from re import T
 import sys
 import time
 from copy import deepcopy
@@ -656,21 +657,21 @@ if __name__ == "__main__":
                         bucket='',
                         cache=None,
                         cfg='./models/yolov5s.yaml',
-                        cos_lr=False,
-                        data='C:/datasets/crack_detector_train/data_train.yaml',
+                        cos_lr=True,
+                        data='C:/datasets/crack_detector/data_train.yaml',
                         device='0',
                         entity=None,
-                        epochs=150,
+                        epochs=50,
                         evolve=None,
                         exist_ok=False,
                         freeze=[0],
-                        hyp=WindowsPath('data/hyps/hyp.metola-v7.yaml'),
+                        hyp=WindowsPath('data/hyps/hyp.metola-v8.yaml'),
                         image_weights=False,
                         imgsz=640,
                         label_smoothing=0.0,
                         local_rank=-1,
                         multi_scale=False,
-                        name='train_v7',
+                        name='train_v8',
                         noautoanchor=False,
                         nosave=False,
                         noval=False,
