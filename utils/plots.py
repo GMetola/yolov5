@@ -258,6 +258,23 @@ def plot_lr_scheduler(optimizer, scheduler, epochs=300, save_dir=''):
     plt.close()
 
 
+def plot_lr_vs_iter(exploding_lr, myloss, save_dir=''):
+    # Plot LR simulating training for full epochs
+    matplotlib.use('TkAgg')
+    fig = plt.figure()
+    ax = fig.add_subplot(111)    
+    line = matplotlib.lines.Line2D(exploding_lr, myloss)
+    ax.add_line(line)
+    plt.grid()
+    ax.set_xlim(min(exploding_lr)*0.9, max(exploding_lr)*1.1)
+    ax.set_ylim(min(myloss)*0.9, max(myloss)*1.1)
+    ax.set_xlabel('Ratio de aprendizaje')
+    ax.set_ylabel('Pérdida')
+    plt.show()
+    plt.savefig(Path(save_dir) / 'LR vs iterations.png', dpi=200)
+    plt.close()
+
+
 def plot_val_txt():  # from utils.plots import *; plot_val()
     # Plot val.txt histograms
     x = np.loadtxt('val.txt', dtype=np.float32)

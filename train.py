@@ -24,6 +24,8 @@ from datetime import datetime
 from pathlib import Path
 
 import numpy as np
+import matplotlib
+from matplotlib import pyplot as plt
 import torch
 import torch.distributed as dist
 import torch.nn as nn
@@ -55,7 +57,7 @@ from utils.loggers import Loggers
 from utils.loggers.wandb.wandb_utils import check_wandb_resume
 from utils.loss import ComputeLoss
 from utils.metrics import fitness
-from utils.plots import plot_evolve, plot_labels
+from utils.plots import plot_evolve, plot_labels, plot_lr_scheduler, plot_lr_vs_iter
 from utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_device, torch_distributed_zero_first
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
@@ -182,7 +184,8 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
         lf = one_cycle(1, hyp['lrf'], epochs)  # cosine 1->hyp['lrf']
     else:
         lf = lambda x: (1 - x / epochs) * (1.0 - hyp['lrf']) + hyp['lrf']  # linear
-    scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)  # plot_lr_scheduler(optimizer, scheduler, epochs)
+    scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)
+    plot_lr_scheduler(optimizer, scheduler, epochs, save_dir)
 
     # EMA
     ema = ModelEMA(model) if RANK in [-1, 0] else None
@@ -279,6 +282,10 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
     scaler = amp.GradScaler(enabled=cuda)
     stopper = EarlyStopping(patience=opt.patience)
     compute_loss = ComputeLoss(model)  # init loss class
+    exploding_lr_step = 1.001
+    exploding_lr = [0.0001]
+    myloss = [0]
+    iteration = []
     LOGGER.info(f'Image sizes {imgsz} train, {imgsz} val\n'
                 f'Using {train_loader.num_workers * WORLD_SIZE} dataloader workers\n'
                 f"Logging results to {colorstr('bold', save_dir)}\n"
@@ -357,9 +364,17 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
                 callbacks.run('on_train_batch_end', ni, model, imgs, targets, paths, plots, opt.sync_bn)
                 if callbacks.stop_training:
                     return
+            # trying to explode the loss updating a lot of times the LR to find the sweet LR initial spot.
+            for g in optimizer.param_groups:
+                g['lr'] = exploding_lr[-1] + exploding_lr_step
+            exploding_lr.append(exploding_lr[-1] * exploding_lr_step)
+            myloss.append(np.mean(mloss.tolist()))
+            iteration.append(ni)
+
             # end batch ------------------------------------------------------------------------------------------------
 
         # Scheduler
+        plot_lr_vs_iter(exploding_lr, myloss, save_dir)
         lr = [x['lr'] for x in optimizer.param_groups]  # for loggers
         scheduler.step()
 
@@ -657,7 +672,7 @@ if __name__ == "__main__":
                         bucket='',
                         cache=None,
                         cfg='./models/yolov5s.yaml',
-                        cos_lr=True,
+                        cos_lr=False,
                         data='C:/datasets/crack_detector/data_train.yaml',
                         device='0',
                         entity=None,
@@ -671,7 +686,7 @@ if __name__ == "__main__":
                         label_smoothing=0.0,
                         local_rank=-1,
                         multi_scale=False,
-                        name='train_v8',
+                        name='zprueba_exploding_lr',
                         noautoanchor=False,
                         nosave=False,
                         noval=False,
