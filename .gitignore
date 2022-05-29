@@ -27,6 +27,7 @@ storage.googleapis.com
 **/labels/*
 **/old/*
 **/train/zprueba*
+**/train/*/events*
 data/*
 data/images/*
 !data/*.yaml

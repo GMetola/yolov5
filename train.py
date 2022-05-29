@@ -55,7 +55,7 @@ from utils.loggers import Loggers
 from utils.loggers.wandb.wandb_utils import check_wandb_resume
 from utils.loss import ComputeLoss
 from utils.metrics import fitness
-from utils.plots import plot_evolve, plot_labels
+from utils.plots import plot_evolve, plot_labels, plot_lr_scheduler
 from utils.torch_utils import EarlyStopping, ModelEMA, de_parallel, select_device, torch_distributed_zero_first
 
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
@@ -182,7 +182,8 @@ def train(hyp,  # path/to/hyp.yaml or hyp dictionary
         lf = one_cycle(1, hyp['lrf'], epochs)  # cosine 1->hyp['lrf']
     else:
         lf = lambda x: (1 - x / epochs) * (1.0 - hyp['lrf']) + hyp['lrf']  # linear
-    scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)  # plot_lr_scheduler(optimizer, scheduler, epochs)
+    scheduler = lr_scheduler.LambdaLR(optimizer, lr_lambda=lf)
+    plot_lr_scheduler(optimizer, scheduler, epochs, save_dir)
 
     # EMA
     ema = ModelEMA(model) if RANK in [-1, 0] else None
@@ -657,11 +658,11 @@ if __name__ == "__main__":
                         bucket='',
                         cache=None,
                         cfg='./models/yolov5s.yaml',
-                        cos_lr=True,
-                        data='C:/datasets/crack_detector/data_train.yaml',
+                        cos_lr=False,
+                        data='C:/datasets/crack_detector_train/data_train.yaml',
                         device='0',
                         entity=None,
-                        epochs=50,
+                        epochs=80,
                         evolve=None,
                         exist_ok=False,
                         freeze=[0],
