@@ -1,3 +1,7 @@
+DISCLAIMER: 
+This is a personal version of YOLOv5 modified for my own purposes. 
+
+
 <div align="center">
 <p>
    <a align="left" href="https://ultralytics.com/yolov5" target="_blank">
