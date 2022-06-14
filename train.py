@@ -666,13 +666,13 @@ if __name__ == "__main__":
                         evolve=None,
                         exist_ok=False,
                         freeze=[0],
-                        hyp=WindowsPath('data/hyps/hyp.metola-v8.yaml'),
+                        hyp=WindowsPath('data/hyps/hyp.scratch-low.yaml'),
                         image_weights=False,
                         imgsz=640,
                         label_smoothing=0.0,
                         local_rank=-1,
                         multi_scale=False,
-                        name='train_v8',
+                        name='v16_batch_workers',
                         noautoanchor=False,
                         nosave=False,
                         noval=False,
@@ -687,6 +687,6 @@ if __name__ == "__main__":
                         sync_bn=False,
                         upload_dataset=False,
                         weights='yolov5s.pt',
-                        workers=6)
+                        workers=7)
         
     main(opt)
