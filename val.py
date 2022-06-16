@@ -387,23 +387,26 @@ if __name__ == "__main__":
         # sobre los pesos: ¿los que salen en train/exp ya son completos o tengo que sumarles la base de yolo
         opt = argparse.Namespace(
                             data='C:/datasets/crack_detector_train/data_valid.yaml',
-                            weights=['C:/git/yolov5/runs/train/exp_train/weights/best.pt'],
-                            batch_size=16,
+                            weights=['C:/git/yolov5/runs/train/v19_no_mosaic/weights/best.pt'],
+                            batch_size=64,
                             imgsz=640,
-                            conf_thres=0.254,
-                            iou_thres=0.65,
+                            conf_thres=0.001,
+                            iou_thres=0.6,
                             task='val',
                             device=0,
+                            workers=6,
                             single_cls=False,
                             augment=False,
-                            verbose=True,
-                            save_txt=True,
-                            save_hybrid=True,
-                            save_conf=True,
+                            verbose=False,
+                            save_txt=False,
+                            save_hybrid=False,
+                            save_conf=False,
                             save_json=False,
-                            project='runs/test',
-                            name='exp_thresh10%',
+                            project='runs/train',
+                            name='v19_no_mosaic',
                             exist_ok=False,
-                            half=True
+                            half=True,
+                            dnn=False,
+                            plots=True
                         )
     main(opt)
