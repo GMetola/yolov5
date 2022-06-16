@@ -786,3 +786,24 @@ Traceback (most recent call last):
   File "c:\git\yolov5\utils\torch_utils.py", line 202, in fuse_conv_and_bn
     fusedconv.weight.copy_(torch.mm(w_bn, w_conv).view(fusedconv.weight.shape))
 RuntimeError: CUDA error: CUBLAS_STATUS_NOT_INITIALIZED when calling `cublasCreate(handle)`
+
+
+////////////////////////////////////////////////
+EJECUTANDO val.py POR SEPARADO
+
+Fusing layers... 
+YOLOv5m summary: 290 layers, 20885262 parameters, 0 gradients, 48.0 GFLOPs
+val: Scanning 'C:\datasets\crack_detector_train\valid\labels.cache' images and labels... 713 found, 0 missing, 0 empty, 0 corrupt: 100%|██████████| 713/713 [00:00<?, ?it/s]
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100%|██████████| 12/12 [00:17<00:00,  1.42s/it]
+                 all        713       6499      0.533        0.5      0.488      0.161
+    Reflective Crack        713       1258      0.641      0.625      0.638      0.245
+     Transvers Crack        713        518      0.603      0.608       0.57      0.155
+         Block Crack        713        994       0.54      0.369       0.42      0.128
+  Longitudinal Crack        713        233      0.399      0.214      0.246      0.077
+      Aligator Crack        713        419      0.369      0.434      0.349      0.091
+Sealed Reflective Crack        713        535      0.674      0.739      0.733       0.27
+Lane Longitudinal Crack        713       1266      0.591       0.39      0.441       0.14
+Sealed Longitudinal Crack        713       1236      0.549      0.473      0.507      0.169
+             pothole        713         40      0.433       0.65      0.491      0.171
+Speed: 0.2ms pre-process, 10.6ms inference, 3.1ms NMS per image at shape (64, 3, 640, 640)
+Global TP: 364.1, FP: 247.1, FN: 267.9
