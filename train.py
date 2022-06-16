@@ -549,9 +549,9 @@ def main(opt, callbacks=Callbacks()):
     # Evolve hyperparameters (optional)
     else:
         # Hyperparameter evolution metadata (mutation scale 0-1, lower_limit, upper_limit)
-        meta = {'lr0': (1, 1e-5, 1e-1),  # initial learning rate (SGD=1E-2, Adam=1E-3)
-                'lrf': (1, 0.01, 1.0),  # final OneCycleLR learning rate (lr0 * lrf)
-                'momentum': (0.3, 0.6, 0.98),  # SGD momentum/Adam beta1
+        meta = {'lr0': (3, 1e-5, 1e-2),  # initial learning rate (SGD=1E-2, Adam=1E-3)
+                'lrf': (3, 0.01, 1.0),  # final OneCycleLR learning rate (lr0 * lrf)
+                'momentum': (1, 0.6, 0.98),  # SGD momentum/Adam beta1
                 'weight_decay': (0, 0.0, 0.001),  # optimizer weight decay
                 'warmup_epochs': (0, 0.0, 5.0),  # warmup epochs (fractions ok)
                 'warmup_momentum': (0, 0.0, 0.95),  # warmup initial momentum
@@ -662,8 +662,8 @@ if __name__ == "__main__":
                         data='C:/datasets/crack_detector_train/data_train.yaml',
                         device='0',
                         entity=None,
-                        epochs=50,
-                        evolve=20,
+                        epochs=55,
+                        evolve=10,
                         exist_ok=False,
                         freeze=[0],
                         hyp=WindowsPath('data/hyps/hyp.scratch-low.yaml'),
@@ -672,7 +672,7 @@ if __name__ == "__main__":
                         label_smoothing=0.0,
                         local_rank=-1,
                         multi_scale=False,
-                        name='v15_evolving',
+                        name='v15_evolving_hard',
                         noautoanchor=False,
                         nosave=False,
                         noval=False,
@@ -687,6 +687,6 @@ if __name__ == "__main__":
                         sync_bn=False,
                         upload_dataset=False,
                         weights='yolov5s.pt',
-                        workers=7)
+                        workers=6)
         
     main(opt)
