@@ -549,9 +549,9 @@ def main(opt, callbacks=Callbacks()):
     # Evolve hyperparameters (optional)
     else:
         # Hyperparameter evolution metadata (mutation scale 0-1, lower_limit, upper_limit)
-        meta = {'lr0': (3, 1e-5, 1e-2),  # initial learning rate (SGD=1E-2, Adam=1E-3)
-                'lrf': (3, 0.01, 1.0),  # final OneCycleLR learning rate (lr0 * lrf)
-                'momentum': (1, 0.6, 0.98),  # SGD momentum/Adam beta1
+        meta = {'lr0': (1, 1e-5, 1e-2),  # initial learning rate (SGD=1E-2, Adam=1E-3)
+                'lrf': (1, 0.01, 1.0),  # final OneCycleLR learning rate (lr0 * lrf)
+                'momentum': (0.3, 0.6, 0.98),  # SGD momentum/Adam beta1
                 'weight_decay': (0, 0.0, 0.001),  # optimizer weight decay
                 'warmup_epochs': (0, 0.0, 5.0),  # warmup epochs (fractions ok)
                 'warmup_momentum': (0, 0.0, 0.95),  # warmup initial momentum
@@ -578,6 +578,7 @@ def main(opt, callbacks=Callbacks()):
                 'mosaic': (0, 0.0, 1.0),  # image mixup (probability)
                 'mixup': (0, 0.0, 1.0),  # image mixup (probability)
                 'copy_paste': (0, 0.0, 1.0)}  # segment copy-paste (probability)
+        meta_list = list(meta.items())
 
         with open(opt.hyp, errors='ignore') as f:
             hyp = yaml.safe_load(f)  # load hyps dict
@@ -610,10 +611,24 @@ def main(opt, callbacks=Callbacks()):
                 g = np.array([meta[k][0] for k in hyp.keys()])  # gains 0-1
                 ng = len(meta)
                 v = np.ones(ng)
-                while all(v == 1):  # mutate until a change occurs (prevent duplicates)
-                    v = (g * (npr.random(ng) < mp) * npr.randn(ng) * npr.random() * s + 1).clip(0.3, 3.0)
-                for i, k in enumerate(hyp.keys()):  # plt.hist(v.ravel(), 300)
-                    hyp[k] = float(x[i + 7] * v[i])  # mutate
+                HARD_GRID_EVOLVE = True # substitutes mutations by a grid of number of steps equal to the evolve config
+                if HARD_GRID_EVOLVE:
+                    modified_hyp_index = np.where(g>0)[0][int(npr.random() * np.sum(g))]  # selects one mutation taking into account probabilities
+                    modified_hyp = meta_list[modified_hyp_index]
+                    hyp_min = modified_hyp[1][1]
+                    hyp_max = modified_hyp[1][2]
+                    if modified_hyp[0] in ['lr0','lrf']:  # logarithmic increase
+                        v = np.logspace()
+                    else:  # linear increase
+                        v = np.linspace()
+
+                else:
+                    while all(v == 1):  # mutate until a change occurs (prevent duplicates)
+                        v = (g * (npr.random(ng) < mp) * npr.randn(ng) * npr.random() * s + 1).clip(0.3, 3.0)
+                    for i, k in enumerate(hyp.keys()):  # plt.hist(v.ravel(), 300)
+                        hyp[k] = float(x[i + 7] * v[i])  # mutate
+                    
+                
 
             # Constrain to limits
             for k, v in meta.items():
@@ -663,7 +678,7 @@ if __name__ == "__main__":
                         device='0',
                         entity=None,
                         epochs=55,
-                        evolve=10,
+                        evolve=5,
                         exist_ok=False,
                         freeze=[0],
                         hyp=WindowsPath('data/hyps/hyp.scratch-low.yaml'),
