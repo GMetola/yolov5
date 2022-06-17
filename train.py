@@ -618,9 +618,11 @@ def main(opt, callbacks=Callbacks()):
                     hyp_min = modified_hyp[1][1]
                     hyp_max = modified_hyp[1][2]
                     if modified_hyp[0] in ['lr0','lrf']:  # logarithmic increase
-                        v = np.logspace()
+                        possible_values = np.logspace(np.log10(hyp_min), np.log10(hyp_max), opt.evolve)
                     else:  # linear increase
-                        v = np.linspace()
+                        possible_values = np.linspace(hyp_min, hyp_max, opt.evolve)
+                    new_value = possible_values[npr.randint(len(possible_values))]
+                    hyp[modified_hyp[0]] = new_value
 
                 else:
                     while all(v == 1):  # mutate until a change occurs (prevent duplicates)
@@ -677,8 +679,8 @@ if __name__ == "__main__":
                         data='C:/datasets/crack_detector_train/data_train.yaml',
                         device='0',
                         entity=None,
-                        epochs=55,
-                        evolve=5,
+                        epochs=65,
+                        evolve=10,
                         exist_ok=False,
                         freeze=[0],
                         hyp=WindowsPath('data/hyps/hyp.scratch-low.yaml'),
