@@ -1,0 +1,23 @@
+(torch_yolov5) PS C:\git\yolov5>  & 'C:\Users\metol\.conda\envs\torch_yolov5\python.exe' 'c:\Users\metol\.vscode\extensions\ms-python.python-2022.8.0\pythonFiles\lib\python\debugpy\launcher' '64920' '--' 'c:\git\yolov5\val.py' 
+parsing is deactivated, check final rows of val.py
+YOLOv5  v6.1-87-g9579aef torch 1.8.0.dev20210208+cu110 CUDA:0 (NVIDIA GeForce RTX 3060, 12288MiB)
+
+Fusing layers... 
+YOLOv5m summary: 290 layers, 20885262 parameters, 0 gradients, 48.0 GFLOPs
+test: Scanning 'D:\datasets\crack_detector_test\test\labels' images and labels...818 found, 0 missing, 0 empty, 0 corrupt: 100%|██████████| 818/818 [00:02<00:00, 360.51it/s]
+test: WARNING: Cache directory D:\datasets\crack_detector_test\test is not writeable: [WinError 183] Cannot create a file when that file already exists: 'D:\\datasets\\crack_detector_test\\test\\labels.cache.npy' 
+-> 'D:\\datasets\\crack_detector_test\\test\\labels.cache'
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100%|██████████| 13/13 [00:18<00:00,  1.40s/it]
+                 all        818       7608      0.486       0.54      0.488      0.159
+    Reflective Crack        818       1491      0.589      0.659      0.621      0.229
+     Transvers Crack        818        604      0.613      0.646      0.615       0.17
+         Block Crack        818       1189      0.519      0.441      0.435      0.127
+  Longitudinal Crack        818        259      0.345      0.301       0.23     0.0672
+      Aligator Crack        818        444      0.253      0.514      0.256     0.0702
+Sealed Reflective Crack        818        639      0.638      0.768      0.733      0.284
+Lane Longitudinal Crack        818       1542      0.592      0.492      0.517      0.165
+Sealed Longitudinal Crack        818       1410       0.51      0.536      0.537      0.191
+             pothole        818         30      0.316        0.5      0.448      0.126
+Speed: 0.2ms pre-process, 10.4ms inference, 3.2ms NMS per image at shape (64, 3, 640, 640)
+Global TP: 433.2, FP: 286.3, FN: 300.7
+Results saved to runs\test\yolov5m

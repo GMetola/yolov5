@@ -386,13 +386,13 @@ if __name__ == "__main__":
         from pathlib import WindowsPath
         # sobre los pesos: ¿los que salen en train/exp ya son completos o tengo que sumarles la base de yolo
         opt = argparse.Namespace(
-                            data='C:/datasets/crack_detector_train/data_valid.yaml',
+                            data='D:/datasets/crack_detector_test/data_test.yaml',
                             weights=['C:/git/yolov5/runs/train/v18_yolov5m/weights/best.pt'],
                             batch_size=64,
                             imgsz=640,
                             conf_thres=0.001,
                             iou_thres=0.6,
-                            task='val',
+                            task='test',
                             device=0,
                             workers=6,
                             single_cls=False,
@@ -402,8 +402,8 @@ if __name__ == "__main__":
                             save_hybrid=False,
                             save_conf=False,
                             save_json=False,
-                            project='runs/train',
-                            name='v18_yolov5m',
+                            project='runs/test',
+                            name='yolov5m',
                             exist_ok=False,
                             half=True,
                             dnn=False,

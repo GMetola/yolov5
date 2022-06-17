@@ -1,0 +1,23 @@
+(torch_yolov5) PS C:\git\yolov5>  & 'C:\Users\metol\.conda\envs\torch_yolov5\python.exe' 'c:\Users\metol\.vscode\extensions\ms-python.python-2022.8.0\pythonFiles\lib\python\debugpy\launcher' '64889' '--' 'c:\git\yolov5\val.py' 
+parsing is deactivated, check final rows of val.py
+YOLOv5  v6.1-87-g9579aef torch 1.8.0.dev20210208+cu110 CUDA:0 (NVIDIA GeForce RTX 3060, 12288MiB)
+
+Fusing layers... 
+YOLOv5s summary: 213 layers, 7034398 parameters, 0 gradients, 15.9 GFLOPs
+test: Scanning 'D:\datasets\crack_detector_test\test\labels' images and labels...818 found, 0 missing, 0 empty, 0 corrupt: 100%|██████████| 818/818 [00:02<00:00, 346.32it/s]
+test: WARNING: Cache directory D:\datasets\crack_detector_test\test is not writeable: [WinError 183] Cannot create a file when that file already exists: 'D:\\datasets\\crack_detector_test\\test\\labels.cache.npy' 
+-> 'D:\\datasets\\crack_detector_test\\test\\labels.cache'
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100%|██████████| 13/13 [00:13<00:00,  1.02s/it]
+                 all        818       7608      0.504      0.545      0.495       0.16
+    Reflective Crack        818       1491      0.577      0.691      0.621      0.229
+     Transvers Crack        818        604      0.618      0.662      0.635      0.183
+         Block Crack        818       1189      0.494      0.479      0.439      0.129
+  Longitudinal Crack        818        259      0.359      0.359      0.235     0.0644
+      Aligator Crack        818        444      0.345      0.421      0.314     0.0861
+Sealed Reflective Crack        818        639      0.682      0.728      0.739      0.281
+Lane Longitudinal Crack        818       1542      0.547      0.525      0.511      0.164
+Sealed Longitudinal Crack        818       1410      0.538      0.509       0.51       0.18
+             pothole        818         30      0.379      0.533      0.452      0.124
+Speed: 0.2ms pre-process, 4.8ms inference, 2.9ms NMS per image at shape (64, 3, 640, 640)
+Global TP: 442.3, FP: 260.8, FN: 296.9
+Results saved to runs\test\albumentations

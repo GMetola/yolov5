@@ -1,0 +1,23 @@
+(torch_yolov5) PS C:\git\yolov5>  & 'C:\Users\metol\.conda\envs\torch_yolov5\python.exe' 'c:\Users\metol\.vscode\extensions\ms-python.python-2022.8.0\pythonFiles\lib\python\debugpy\launcher' '60381' '--' 'c:\git\yolov5\val.py' 
+parsing is deactivated, check final rows of val.py
+YOLOv5  v6.1-87-g9579aef torch 1.8.0.dev20210208+cu110 CUDA:0 (NVIDIA GeForce RTX 3060, 12288MiB)
+
+Fusing layers... 
+YOLOv5s summary: 213 layers, 7034398 parameters, 0 gradients, 15.9 GFLOPs
+test: Scanning 'D:\datasets\crack_detector_test\test\labels' images and labels...818 found, 0 missing, 0 empty, 0 corrupt: 100%|██████████| 818/818 [00:02<00:00, 341.54it/s]
+test: WARNING: Cache directory D:\datasets\crack_detector_test\test is not writeable: [WinError 183] Cannot create a file when that file already exists: 'D:\\datasets\\crack_detector_test\\test\\labels.cache.npy' 
+-> 'D:\\datasets\\crack_detector_test\\test\\labels.cache'
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100%|██████████| 13/13 [00:13<00:00,  1.03s/it]
+                 all        818       7608      0.522      0.527       0.48      0.161
+    Reflective Crack        818       1491      0.616      0.633       0.61      0.223
+     Transvers Crack        818        604      0.657      0.657      0.638      0.187
+         Block Crack        818       1189      0.501      0.479      0.428      0.124
+  Longitudinal Crack        818        259      0.315      0.276      0.175      0.056
+      Aligator Crack        818        444       0.35      0.346      0.252     0.0602
+Sealed Reflective Crack        818        639      0.664      0.753      0.731      0.277
+Lane Longitudinal Crack        818       1542      0.569      0.507      0.511      0.162
+Sealed Longitudinal Crack        818       1410       0.54      0.522      0.522      0.189
+             pothole        818         30      0.486      0.567      0.457      0.169
+Speed: 0.2ms pre-process, 4.8ms inference, 3.4ms NMS per image at shape (64, 3, 640, 640)
+Global TP: 458.7, FP: 312.7, FN: 275.5
+Results saved to runs\test\obj_loss_gain
