@@ -598,6 +598,9 @@ def main(opt, callbacks=Callbacks()):
                 n = min(5, len(x))  # number of previous results to consider
                 x = x[np.argsort(-fitness(x))][:n]  # top n mutations
                 w = fitness(x) - fitness(x).min() + 1E-6  # weights (sum > 0)
+                if fitness(x).max() - fitness(x).min() < 0.05:
+                    # the growth is stagnant, it gets a great mutation
+                    FULL_RANGE_MUTATION = True # substitutes mutations by a grid of number of steps equal to the evolve config
                 if parent == 'single' or len(x) == 1:
                     # x = x[random.randint(0, n - 1)]  # random selection
                     x = x[random.choices(range(n), weights=w)[0]]  # weighted selection
@@ -611,18 +614,19 @@ def main(opt, callbacks=Callbacks()):
                 g = np.array([meta[k][0] for k in hyp.keys()])  # gains 0-1
                 ng = len(meta)
                 v = np.ones(ng)
-                HARD_GRID_EVOLVE = True # substitutes mutations by a grid of number of steps equal to the evolve config
-                if HARD_GRID_EVOLVE:
+                if FULL_RANGE_MUTATION:
                     modified_hyp_index = np.where(g>0)[0][int(npr.random() * np.sum(g))]  # selects one mutation taking into account probabilities
                     modified_hyp = meta_list[modified_hyp_index]
                     hyp_min = modified_hyp[1][1]
                     hyp_max = modified_hyp[1][2]
                     if modified_hyp[0] in ['lr0','lrf']:  # logarithmic increase
                         possible_values = np.logspace(np.log10(hyp_min), np.log10(hyp_max), opt.evolve)
+                        s = s * 10  # the logarithmic mutation shall be greater
                     else:  # linear increase
                         possible_values = np.linspace(hyp_min, hyp_max, opt.evolve)
                     new_value = possible_values[npr.randint(len(possible_values))]
-                    hyp[modified_hyp[0]] = new_value
+                    mutated_value = new_value * npr.random() * s
+                    hyp[modified_hyp[0]] = mutated_value
 
                 else:
                     while all(v == 1):  # mutate until a change occurs (prevent duplicates)
