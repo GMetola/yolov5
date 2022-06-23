@@ -549,35 +549,36 @@ def main(opt, callbacks=Callbacks()):
     # Evolve hyperparameters (optional)
     else:
         # Hyperparameter evolution metadata (mutation scale 0-1, lower_limit, upper_limit)
-        meta = {'lr0': (1, 1e-5, 1e-1),  # initial learning rate (SGD=1E-2, Adam=1E-3)
+        meta = {'lr0': (1, 1e-5, 1e-2),  # initial learning rate (SGD=1E-2, Adam=1E-3)
                 'lrf': (1, 0.01, 1.0),  # final OneCycleLR learning rate (lr0 * lrf)
                 'momentum': (0.3, 0.6, 0.98),  # SGD momentum/Adam beta1
-                'weight_decay': (1, 0.0, 0.001),  # optimizer weight decay
-                'warmup_epochs': (1, 0.0, 5.0),  # warmup epochs (fractions ok)
-                'warmup_momentum': (1, 0.0, 0.95),  # warmup initial momentum
-                'warmup_bias_lr': (1, 0.0, 0.2),  # warmup initial bias lr
-                'box': (1, 0.02, 0.2),  # box loss gain
-                'cls': (1, 0.2, 4.0),  # cls loss gain
-                'cls_pw': (1, 0.5, 2.0),  # cls BCELoss positive_weight
-                'obj': (1, 0.2, 4.0),  # obj loss gain (scale with pixels)
-                'obj_pw': (1, 0.5, 2.0),  # obj BCELoss positive_weight
+                'weight_decay': (0, 0.0, 0.001),  # optimizer weight decay
+                'warmup_epochs': (0, 0.0, 5.0),  # warmup epochs (fractions ok)
+                'warmup_momentum': (0, 0.0, 0.95),  # warmup initial momentum
+                'warmup_bias_lr': (0, 0.0, 0.2),  # warmup initial bias lr
+                'box': (0, 0.02, 0.2),  # box loss gain
+                'cls': (0, 0.2, 4.0),  # cls loss gain
+                'cls_pw': (0, 0.5, 2.0),  # cls BCELoss positive_weight
+                'obj': (0, 0.2, 4.0),  # obj loss gain (scale with pixels)
+                'obj_pw': (0, 0.5, 2.0),  # obj BCELoss positive_weight
                 'iou_t': (0, 0.1, 0.7),  # IoU training threshold
-                'anchor_t': (1, 2.0, 8.0),  # anchor-multiple threshold
-                'anchors': (2, 2.0, 10.0),  # anchors per output grid (0 to ignore)
+                'anchor_t': (0, 2.0, 8.0),  # anchor-multiple threshold
+                'anchors': (0, 2.0, 10.0),  # anchors per output grid (0 to ignore)
                 'fl_gamma': (0, 0.0, 2.0),  # focal loss gamma (efficientDet default gamma=1.5)
-                'hsv_h': (1, 0.0, 0.1),  # image HSV-Hue augmentation (fraction)
-                'hsv_s': (1, 0.0, 0.9),  # image HSV-Saturation augmentation (fraction)
-                'hsv_v': (1, 0.0, 0.9),  # image HSV-Value augmentation (fraction)
-                'degrees': (1, 0.0, 45.0),  # image rotation (+/- deg)
-                'translate': (1, 0.0, 0.9),  # image translation (+/- fraction)
-                'scale': (1, 0.0, 0.9),  # image scale (+/- gain)
-                'shear': (1, 0.0, 10.0),  # image shear (+/- deg)
+                'hsv_h': (0, 0.0, 0.1),  # image HSV-Hue augmentation (fraction)
+                'hsv_s': (0, 0.0, 0.9),  # image HSV-Saturation augmentation (fraction)
+                'hsv_v': (0, 0.0, 0.9),  # image HSV-Value augmentation (fraction)
+                'degrees': (0, 0.0, 45.0),  # image rotation (+/- deg)
+                'translate': (0, 0.0, 0.9),  # image translation (+/- fraction)
+                'scale': (0, 0.0, 0.9),  # image scale (+/- gain)
+                'shear': (0, 0.0, 10.0),  # image shear (+/- deg)
                 'perspective': (0, 0.0, 0.001),  # image perspective (+/- fraction), range 0-0.001
-                'flipud': (1, 0.0, 1.0),  # image flip up-down (probability)
+                'flipud': (0, 0.0, 1.0),  # image flip up-down (probability)
                 'fliplr': (0, 0.0, 1.0),  # image flip left-right (probability)
-                'mosaic': (1, 0.0, 1.0),  # image mixup (probability)
-                'mixup': (1, 0.0, 1.0),  # image mixup (probability)
-                'copy_paste': (1, 0.0, 1.0)}  # segment copy-paste (probability)
+                'mosaic': (0, 0.0, 1.0),  # image mixup (probability)
+                'mixup': (0, 0.0, 1.0),  # image mixup (probability)
+                'copy_paste': (0, 0.0, 1.0)}  # segment copy-paste (probability)
+        meta_list = list(meta.items())
 
         with open(opt.hyp, errors='ignore') as f:
             hyp = yaml.safe_load(f)  # load hyps dict
@@ -597,6 +598,9 @@ def main(opt, callbacks=Callbacks()):
                 n = min(5, len(x))  # number of previous results to consider
                 x = x[np.argsort(-fitness(x))][:n]  # top n mutations
                 w = fitness(x) - fitness(x).min() + 1E-6  # weights (sum > 0)
+                if fitness(x).max() - fitness(x).min() < 0.05:
+                    # the growth is stagnant, it gets a great mutation
+                    FULL_RANGE_MUTATION = True # substitutes mutations by a grid of number of steps equal to the evolve config
                 if parent == 'single' or len(x) == 1:
                     # x = x[random.randint(0, n - 1)]  # random selection
                     x = x[random.choices(range(n), weights=w)[0]]  # weighted selection
@@ -610,10 +614,27 @@ def main(opt, callbacks=Callbacks()):
                 g = np.array([meta[k][0] for k in hyp.keys()])  # gains 0-1
                 ng = len(meta)
                 v = np.ones(ng)
-                while all(v == 1):  # mutate until a change occurs (prevent duplicates)
-                    v = (g * (npr.random(ng) < mp) * npr.randn(ng) * npr.random() * s + 1).clip(0.3, 3.0)
-                for i, k in enumerate(hyp.keys()):  # plt.hist(v.ravel(), 300)
-                    hyp[k] = float(x[i + 7] * v[i])  # mutate
+                if FULL_RANGE_MUTATION:
+                    modified_hyp_index = np.where(g>0)[0][int(npr.random() * np.sum(g))]  # selects one mutation taking into account probabilities
+                    modified_hyp = meta_list[modified_hyp_index]
+                    hyp_min = modified_hyp[1][1]
+                    hyp_max = modified_hyp[1][2]
+                    if modified_hyp[0] in ['lr0','lrf']:  # logarithmic increase
+                        possible_values = np.logspace(np.log10(hyp_min), np.log10(hyp_max), opt.evolve)
+                        s = s * 10  # the logarithmic mutation shall be greater
+                    else:  # linear increase
+                        possible_values = np.linspace(hyp_min, hyp_max, opt.evolve)
+                    new_value = possible_values[npr.randint(len(possible_values))]
+                    mutated_value = new_value * npr.random() * s
+                    hyp[modified_hyp[0]] = mutated_value
+
+                else:
+                    while all(v == 1):  # mutate until a change occurs (prevent duplicates)
+                        v = (g * (npr.random(ng) < mp) * npr.randn(ng) * npr.random() * s + 1).clip(0.3, 3.0)
+                    for i, k in enumerate(hyp.keys()):  # plt.hist(v.ravel(), 300)
+                        hyp[k] = float(x[i + 7] * v[i])  # mutate
+                    
+                
 
             # Constrain to limits
             for k, v in meta.items():
@@ -657,27 +678,27 @@ if __name__ == "__main__":
                         bbox_interval=-1,
                         bucket='',
                         cache=None,
-                        cfg='./models/yolov5m.yaml',
+                        cfg='./models/yolov5s.yaml',
                         cos_lr=False,
                         data='C:/datasets/crack_detector_train/data_train.yaml',
                         device='0',
                         entity=None,
                         epochs=65,
-                        evolve=None,
+                        evolve=10,
                         exist_ok=False,
                         freeze=[0],
-                        hyp=WindowsPath('data/hyps/hyp.metola-v21_mix.yaml'),
+                        hyp=WindowsPath('data/hyps/hyp.scratch-low.yaml'),
                         image_weights=False,
                         imgsz=640,
                         label_smoothing=0.0,
                         local_rank=-1,
                         multi_scale=False,
-                        name='v21_mix',
+                        name='v15_evolving_hard',
                         noautoanchor=False,
                         nosave=False,
                         noval=False,
                         optimizer='SGD',
-                        patience=20,
+                        patience=10,
                         project=WindowsPath('runs/train'),
                         quad=False,
                         rect=False,
@@ -686,7 +707,7 @@ if __name__ == "__main__":
                         single_cls=False,
                         sync_bn=False,
                         upload_dataset=False,
-                        weights='yolov5m.pt',
+                        weights='yolov5s.pt',
                         workers=6)
         
     main(opt)
